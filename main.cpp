@@ -4,10 +4,6 @@
 #define INPUT_BUF_SIZE 60
 #define SYMBOL_TABLE_SIZE 100
 
-void performPass1(struct symbol* symbolTable[], char* filename, address* addresses) {
-	
-}
-
 /**
  * Splits, and Prepares Segments for the SIC Instruction from a String object.
  *
@@ -39,22 +35,33 @@ segment* prepareSegments(std::string statement) {
     std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third << std::endl;
     return temp;
 }
-int main(int argc, char* argv[]) {
-    if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
-    std::ifstream ifs(argv[1]);
-    if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,argv[0],-1); exit(1); }
-    else {
-        address addresses = { 0x00, 0x00, 0x00 };
-        std::string currentLine;
-        int lineNumber=0;
-        while(getline(ifs,currentLine)){
-            lineNumber++;
-            if(currentLine[0]=='#') { continue; }
-            prepareSegments(currentLine);
-            //insert into symbol table here.
 
 
-        }
+void performPass1(struct symbol symbolTable[], std::string filename, address* addresses) {
+    std::ifstream ifs(filename);
+    if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,filename,-1); exit(1); }
+    std::string currentLine;
+    int lineNumber=0;
+    while(getline(ifs,currentLine)){
+        lineNumber++;
+        if(currentLine[0]=='#') { continue; }
+        segment* current = prepareSegments(currentLine);
+
+        //current should be validated at this point
     }
-    //print table here.
+}
+
+int main(int argc, char* argv[]) {
+
+    if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
+
+    address addresses = { 0x00, 0x00, 0x00 };
+
+    //Initialize the symbol table using calloc.
+    auto* symbolTable = (symbol*) calloc(sizeof(struct symbol),100);
+
+    //Perform pass 1 with given params
+    performPass1(symbolTable,argv[1],&addresses);
+
+
 }

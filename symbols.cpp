@@ -12,14 +12,14 @@ int computeHash(std::string symbolName) {
     return sum%SYMBOL_TABLE_SIZE;
 }
 
-void displaySymbolTable(struct symbol* symbolTable[]) {
-
+void displaySymbolTable(struct symbol symbolTable[]) {
+    //Do this later
 }
 
-void initializeSymbolTable(struct symbol* symbolTable[]) {
-
+void initializeSymbolTable(struct symbol symbolTable[]) {
+    //Not needed because of Calloc
 }
 
-void insertSymbol(struct symbol* symbolTable[], char symbolName[], int symbolAddress) {
-
+void insertSymbol(struct symbol symbolTable[], char symbolName[], int symbolAddress) {
+    //Later
 }
