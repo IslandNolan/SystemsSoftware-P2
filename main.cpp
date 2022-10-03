@@ -45,16 +45,46 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
     while(getline(ifs,currentLine)){
         lineNumber++;
         if(currentLine[0]=='#') { continue; }
+        if(currentLine[0]<32) { displayError(BLANK_RECORD); continue; } //professor stipulated requirements
+
         segment* current = prepareSegments(currentLine);
 
-        //current should be validated at this point
+
+        if(isDirective(*current->first) || isOpcode(*current->first)) {
+            //Throw illegal Symbol here, Exit Program.
+        }
+        else if(isDirective(*current->second)) {
+            if(isStartDirective(*current->second)){
+                //set start and current addresses in address struct.
+                //continue
+            }
+            else {
+                //reserve space, and set increment based on third segment
+            }
+        }
+        else if(isOpcode(*current->second)) {
+            //set increment value to 3.
+        }
+        else{
+            //throw ILLEGAL OPCODE DIRECTIVE here.
+        }
+
+        //If all these pass, then make sure the first segment is not blank.
+        //If it is not blank, then insert the symbol into the table.
+        //Increment current address value by the thing stored in increment
+
+
     }
+    //IMPORTANT: MAKE SURE TO CLOSE THE FILE AFTER READING - IMPORTANT FOR P3
+    ifs.close();
 }
 
 int main(int argc, char* argv[]) {
 
     if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
 
+
+    //Used for important addresses. Start of program, current, and what to increment by
     address addresses = { 0x00, 0x00, 0x00 };
 
     //Initialize the symbol table using calloc.
