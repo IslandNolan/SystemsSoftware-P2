@@ -1,6 +1,8 @@
 #pragma once
 
 #include <bits/stdc++.h>
+#include <string>
+#include <iostream>
 
 #define NAME_SIZE 7
 #define SEGMENT_SIZE 9
@@ -32,15 +34,16 @@ typedef struct symbol
 
 // directives.c functions
 int getMemoryAmount(int directiveType, char* string);
-int isDirective(char* string);
-bool isStartDirective(int directiveType);
+bool isDirective(std::string str);
+int getDirectiveValue(std::string str);
+bool isStartDirective(std::string str);
 
 // errors.c functions
 void displayError(int errorType, std::string errorInfo,int lineNumber);
 
 // opcodes.c functions
-int getOpcodeValue(char* opcode);
-bool isOpcode(char* string);
+int getOpcodeValue(std::string opcode);
+bool isOpcode(std::string string);
 
 // symbols.c functions
 void displaySymbolTable(struct symbol* symbolTable[]);

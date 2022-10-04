@@ -16,10 +16,6 @@ void displaySymbolTable(struct symbol symbolTable[]) {
     //Do this later
 }
 
-void initializeSymbolTable(struct symbol symbolTable[]) {
-    //Not needed because of Calloc
-}
-
 void insertSymbol(struct symbol symbolTable[], char symbolName[], int symbolAddress) {
     //Later
 }

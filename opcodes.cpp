@@ -21,10 +21,14 @@ opcode opcodes[OPCODE_ARRAY_SIZE] = {
 	{"TIX",0x2C},{"WD",0xDC}
 };
 
-int getOpcodeValue(char* opcode) {
-	return 0;
+int getOpcodeValue(std::string opcode) {
+    for(int i=0;i<opcodes;i++){
+        if(opcodes[i].name==string){
+            return i;
+        }
+    }
+    return -1;
 }
-
-bool isOpcode(char* string) {
-    return 0;
+bool isOpcode(std::string string) {
+    return getOpcodeValue(string)!=-1;
 }

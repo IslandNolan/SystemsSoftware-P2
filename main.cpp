@@ -4,6 +4,8 @@
 #define INPUT_BUF_SIZE 60
 #define SYMBOL_TABLE_SIZE 100
 
+using namespace std;
+
 /**
  * Splits, and Prepares Segments for the SIC Instruction from a String object.
  *
@@ -42,19 +44,21 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
     if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,filename,-1); exit(1); }
     std::string currentLine;
     int lineNumber=0;
-    while(getline(ifs,currentLine)){
+    while(getline(ifs,currentLine)) {
         lineNumber++;
-        if(currentLine[0]=='#') { continue; }
-        if(currentLine[0]<32) { displayError(BLANK_RECORD); continue; } //professor stipulated requirements
+        if (currentLine[0] == '#') { continue; }
+        if (currentLine[0] < 32) {
+            displayError(BLANK_RECORD,"",lineNumber);
+            continue;
+        }
+        segment *current = prepareSegments(currentLine);
 
-        segment* current = prepareSegments(currentLine);
-
-
-        if(isDirective(*current->first) || isOpcode(*current->first)) {
+        if(isDirective(current->first) || isOpcode(current->first)) {
             //Throw illegal Symbol here, Exit Program.
         }
-        else if(isDirective(*current->second)) {
-            if(isStartDirective(*current->second)){
+        else if(isDirective(current->second)) {
+            if(isStartDirective(current->second)){
+                //Validated
                 //set start and current addresses in address struct.
                 //continue
             }
@@ -62,7 +66,7 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
                 //reserve space, and set increment based on third segment
             }
         }
-        else if(isOpcode(*current->second)) {
+        else if(isOpcode(current->second)) {
             //set increment value to 3.
         }
         else{
@@ -75,6 +79,7 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
 
 
     }
+
     //IMPORTANT: MAKE SURE TO CLOSE THE FILE AFTER READING - IMPORTANT FOR P3
     ifs.close();
 }
@@ -82,7 +87,6 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
 int main(int argc, char* argv[]) {
 
     if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
-
 
     //Used for important addresses. Start of program, current, and what to increment by
     address addresses = { 0x00, 0x00, 0x00 };
