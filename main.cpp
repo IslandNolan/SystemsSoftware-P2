@@ -1,7 +1,5 @@
 #include "headers.h"
 
-#define COMMENT 35
-#define INPUT_BUF_SIZE 60
 #define SYMBOL_TABLE_SIZE 100
 
 using namespace std;
@@ -34,7 +32,7 @@ segment* prepareSegments(std::string statement) {
             }
         }
     }
-    //std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third << std::endl;
+    std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third;
     return temp;
 }
 
@@ -60,23 +58,24 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
             if(isStartDirective(current->second)){
                 addresses->start = "0x"+current->third;
                 addresses->current = "0x"+current->third;
-                //Continue to next line to parse.
+                cout << endl;
                 continue;
             }
             else {
-                std::cout << "LINE: " << lineNumber << " --> DIRECTIVE MEMORY --> " << getMemoryAmount(getDirectiveValue(current->second),current->third) << " BYTES" << std::endl;
-                //Compute the space and requirements for each directive
-                //reserve space, and set increment based on third segment
+                int numBytes = getMemoryAmount(getDirectiveValue(current->second),current->third);
+                addresses->increment = toHex(to_string(numBytes));
             }
         }
         else if(isOpcode(current->second)) {
-            //Opcode is always increment by 3.
-
-
+            addresses->increment = toHex(to_string(3));
         }
         else{
-            //throw ILLEGAL OPCODE DIRECTIVE here.
+            displayError(ILLEGAL_OPCODE_DIRECTIVE,current->second,lineNumber);
         }
+        int newValue = (stoi(toDec(addresses->current)) + stoi(toDec(addresses->increment)));
+        addresses->current = toHex(to_string(newValue));
+        //cout << "{" << addresses->start+" "<< addresses->current+" "<<addresses->increment+"}" << std::endl;
+
 
         //If all these pass, then make sure the first segment is not blank.
         //If it is not blank, then insert the symbol into the table.
@@ -87,6 +86,14 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
 
     //IMPORTANT: MAKE SURE TO CLOSE THE FILE AFTER READING - IMPORTANT FOR P3
     ifs.close();
+
+
+    //Print Statistics
+    std::cout << "\n\nAssembly Summary - "+filename+"\n----------------\n"
+              << setw(20) << "Starting Address: " << addresses->start << endl
+              << setw(20) << "Ending Address:  "<< addresses->current << endl
+              << setw(20) << "Size (bytes):  " << (stoi(toDec(addresses->current))-stoi(toDec(addresses->start))) << endl;
+
 }
 
 int main(int argc, char* argv[]) {

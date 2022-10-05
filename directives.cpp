@@ -1,7 +1,5 @@
 #include "headers.h"
 
-#define SINGLE_QUOTE 39
-
 enum directives {
 	ERROR, BYTE, END, RESB, RESW, START, WORD
 };
@@ -44,8 +42,8 @@ int getMemoryAmount(int directiveType, std::string str) {
     return 0;
 }
 
-bool isDirective(std::string string) {
-    return getDirectiveValue(string)!=-1;
+bool isDirective(std::string str) {
+    return getDirectiveValue(str)!=-1;
 }
 
 int getDirectiveValue(std::string str){

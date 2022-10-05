@@ -2,17 +2,16 @@
 
 void displayError(int errorType,std::string errorInfo){
     displayError(errorType,errorInfo,-1);
-    return;
 }
 void displayError(int errorType,std::string errorInfo,int line) {
     std::cout << std::setw(25) << std::left << "Error (Line: "+std::to_string(line)+")";
     switch(errorType){
         case BLANK_RECORD: {
-
+            std::cout << "Blank Record" << std::endl;
             break;
         }
         case DUPLICATE: {
-
+            std::cout << "Duplicate Entry '"+errorInfo+"'" << std::endl;
             break;
         }
         case FILE_NOT_FOUND: {
@@ -41,7 +40,6 @@ void displayError(int errorType,std::string errorInfo,int line) {
         }
         case OUT_OF_RANGE_WORD:{
             std::cout << "PLACEHOLDER OUT OF RANGE WORD" << std::endl;
-
             break;
         }
         default: break;
