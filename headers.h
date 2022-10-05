@@ -1,8 +1,7 @@
 #pragma once
 
 #include <bits/stdc++.h>
-#include <string>
-#include <iostream>
+
 
 #define NAME_SIZE 7
 #define SEGMENT_SIZE 9
@@ -14,9 +13,9 @@ enum errors {
 
 typedef struct address
 {
-	int start;
-	int current;
-	int increment;
+	std::string start;
+	std::string current;
+	std::string increment;
 } address;
 
 typedef struct segment
@@ -33,13 +32,14 @@ typedef struct symbol
 } symbol;
 
 // directives.c functions
-int getMemoryAmount(int directiveType, char* string);
+int getMemoryAmount(int directiveType, std::string string);
 bool isDirective(std::string str);
 int getDirectiveValue(std::string str);
 bool isStartDirective(std::string str);
 
 // errors.c functions
 void displayError(int errorType, std::string errorInfo,int lineNumber);
+void displayError(int errorType, std::string errorInfo);
 
 // opcodes.c functions
 int getOpcodeValue(std::string opcode);
@@ -49,3 +49,5 @@ bool isOpcode(std::string string);
 void displaySymbolTable(struct symbol* symbolTable[]);
 void initializeSymbolTable(struct symbol* symbolTable[]);
 void insertSymbol(struct symbol* symbolTable[], char symbolName[], int symbolAddress);
+std::string toHex(std::string decVal);
+std::string toDec(std::string hexVal);

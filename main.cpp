@@ -34,14 +34,14 @@ segment* prepareSegments(std::string statement) {
             }
         }
     }
-    std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third << std::endl;
+    //std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third << std::endl;
     return temp;
 }
 
 
 void performPass1(struct symbol symbolTable[], std::string filename, address* addresses) {
     std::ifstream ifs(filename);
-    if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,filename,-1); exit(1); }
+    if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,filename); exit(1); }
     std::string currentLine;
     int lineNumber=0;
     while(getline(ifs,currentLine)) {
@@ -54,20 +54,25 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
         segment *current = prepareSegments(currentLine);
 
         if(isDirective(current->first) || isOpcode(current->first)) {
-            //Throw illegal Symbol here, Exit Program.
+            displayError(ILLEGAL_SYMBOL,current->first,lineNumber);
         }
         else if(isDirective(current->second)) {
             if(isStartDirective(current->second)){
-                //Validated
-                //set start and current addresses in address struct.
-                //continue
+                addresses->start = "0x"+current->third;
+                addresses->current = "0x"+current->third;
+                //Continue to next line to parse.
+                continue;
             }
             else {
+                std::cout << "LINE: " << lineNumber << " --> DIRECTIVE MEMORY --> " << getMemoryAmount(getDirectiveValue(current->second),current->third) << " BYTES" << std::endl;
+                //Compute the space and requirements for each directive
                 //reserve space, and set increment based on third segment
             }
         }
         else if(isOpcode(current->second)) {
-            //set increment value to 3.
+            //Opcode is always increment by 3.
+
+
         }
         else{
             //throw ILLEGAL OPCODE DIRECTIVE here.
@@ -89,7 +94,7 @@ int main(int argc, char* argv[]) {
     if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
 
     //Used for important addresses. Start of program, current, and what to increment by
-    address addresses = { 0x00, 0x00, 0x00 };
+    address addresses = { "", "", "" };
 
     //Initialize the symbol table using calloc.
     auto* symbolTable = (symbol*) calloc(sizeof(struct symbol),100);

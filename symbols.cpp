@@ -11,6 +11,18 @@ int computeHash(std::string symbolName) {
     }
     return sum%SYMBOL_TABLE_SIZE;
 }
+std::string toDec(std::string hexVal){
+    int value;
+    std::stringstream ss;
+    ss << std::hex << hexVal;
+    ss >> value;
+    return std::to_string(value);
+}
+std::string toHex(std::string decVal){
+    std::stringstream ss;
+    ss << "0x" << std::hex << stoi(decVal);
+    return ss.str();
+}
 
 void displaySymbolTable(struct symbol symbolTable[]) {
     //Do this later
