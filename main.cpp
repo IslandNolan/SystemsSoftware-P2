@@ -5,7 +5,7 @@
 using namespace std;
 
 /**
- * Splits, and Prepares Segments for the SIC Instruction from a String object.
+ * Splits, and Prepares Segments for the SIC Instruction from a standard String object.
  *
  * @param statement String to process, expects 3 words.
  * @return a pointer to a typedef struct segment.
@@ -73,8 +73,9 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
             displayError(ILLEGAL_OPCODE_DIRECTIVE,current->second,lineNumber);
         }
         int newValue = (stoi(toDec(addresses->current)) + stoi(toDec(addresses->increment)));
+        if(newValue> stoi(toDec("0x8000"))) { displayError(OUT_OF_MEMORY, toHex(to_string(newValue)),lineNumber); }
         addresses->current = toHex(to_string(newValue));
-        //cout << "{" << addresses->start+" "<< addresses->current+" "<<addresses->increment+"}" << std::endl;
+        cout << "{" << addresses->start+" "<< addresses->current+" "<<addresses->increment+"}" << std::endl;
 
 
         //If all these pass, then make sure the first segment is not blank.

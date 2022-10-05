@@ -4,13 +4,14 @@ void displayError(int errorType,std::string errorInfo){
     displayError(errorType,errorInfo,-1);
 }
 void displayError(int errorType,std::string errorInfo,int line) {
-    std::cout << std::setw(25) << std::left << "Error (Line: "+std::to_string(line)+")";
+    std::cout << std::setw(25) << std::left << "\n\nError (Line: "+std::to_string(line)+")";
     switch(errorType){
         case BLANK_RECORD: {
             std::cout << "Blank Record" << std::endl;
             break;
         }
         case DUPLICATE: {
+            //Not Done Yet
             std::cout << "Duplicate Entry '"+errorInfo+"'" << std::endl;
             break;
         }
@@ -31,15 +32,15 @@ void displayError(int errorType,std::string errorInfo,int line) {
             break;
         }
         case OUT_OF_MEMORY: {
-            std::cout << "Out of Memory.. (PLACEHOLDER)" << std::endl;
+            std::cout << "Address '"+errorInfo+"' exceeds maximum memory address (0x8000)" << std::endl;
             break;
         }
         case OUT_OF_RANGE_BYTE: {
-            std::cout << "Byte '"+errorInfo+"' is out of Range (00-FF)" << std::endl;
+            std::cout << "Byte '"+errorInfo+"' is out of Range (00 - FF)" << std::endl;
             break;
         }
         case OUT_OF_RANGE_WORD:{
-            std::cout << "PLACEHOLDER OUT OF RANGE WORD" << std::endl;
+            std::cout << "Word '"+errorInfo+"' is out of Range (-16,777,216 - 16,777,215)" << std::endl;
             break;
         }
         default: break;
