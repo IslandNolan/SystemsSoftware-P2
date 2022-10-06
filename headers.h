@@ -2,7 +2,6 @@
 
 #include <bits/stdc++.h>
 
-
 #define NAME_SIZE 7
 #define SEGMENT_SIZE 9
 
@@ -18,17 +17,16 @@ typedef struct address
 	std::string increment;
 } address;
 
-typedef struct segment
-{
+typedef struct segment {
 	std::string first;
 	std::string second;
 	std::string third;
 } segment;
 
-typedef struct symbol
-{
-	std::string name;
-	int address;
+typedef struct symbol {
+	std::string name="";
+	std::string address="";
+    struct symbol* next=nullptr;
 } symbol;
 
 // directives.c functions
@@ -46,8 +44,8 @@ int getOpcodeValue(std::string opcode);
 bool isOpcode(std::string string);
 
 // symbols.c functions
-void displaySymbolTable(struct symbol* symbolTable[]);
-void initializeSymbolTable(struct symbol* symbolTable[]);
-void insertSymbol(struct symbol* symbolTable[], char symbolName[], int symbolAddress);
+int computeHash(std::string str);
+void displaySymbolTable(struct symbol symbolTable[]);
+void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, const std::string& symbolAddress);
 std::string toHex(std::string decVal);
 std::string toDec(std::string hexVal);

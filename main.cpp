@@ -5,7 +5,9 @@
 using namespace std;
 
 /**
+ * @author Nolan Boner - N01440422
  * Splits, and Prepares Segments for the SIC Instruction from a standard String object.
+ * Note: Ignores any tokens after the 3rd.
  *
  * @param statement String to process, expects 3 words.
  * @return a pointer to a typedef struct segment.
@@ -32,12 +34,13 @@ segment* prepareSegments(std::string statement) {
             }
         }
     }
-    std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third;
+    //std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third;
     return temp;
 }
 
 
 void performPass1(struct symbol symbolTable[], std::string filename, address* addresses) {
+    cout << "Symbol Table Log\n----------------" << std::endl;
     std::ifstream ifs(filename);
     if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,filename); exit(1); }
     std::string currentLine;
@@ -47,7 +50,6 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
         if (currentLine[0] == '#') { continue; }
         if (currentLine[0] < 32) {
             displayError(BLANK_RECORD,"",lineNumber);
-            continue;
         }
         segment *current = prepareSegments(currentLine);
 
@@ -58,7 +60,6 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
             if(isStartDirective(current->second)){
                 addresses->start = "0x"+current->third;
                 addresses->current = "0x"+current->third;
-                cout << endl;
                 continue;
             }
             else {
@@ -74,26 +75,25 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
         }
         int newValue = (stoi(toDec(addresses->current)) + stoi(toDec(addresses->increment)));
         if(newValue> stoi(toDec("0x8000"))) { displayError(OUT_OF_MEMORY, toHex(to_string(newValue)),lineNumber); }
+
+        if(!current->first.empty()) {
+            insertSymbol(symbolTable,current->first,addresses->current);
+        }
+
         addresses->current = toHex(to_string(newValue));
-        cout << "{" << addresses->start+" "<< addresses->current+" "<<addresses->increment+"}" << std::endl;
-
-
-        //If all these pass, then make sure the first segment is not blank.
-        //If it is not blank, then insert the symbol into the table.
-        //Increment current address value by the thing stored in increment
-
-
     }
+    std::cout << std::endl;
+    displaySymbolTable(symbolTable);
 
-    //IMPORTANT: MAKE SURE TO CLOSE THE FILE AFTER READING - IMPORTANT FOR P3
+    //IMPORTANT: MAKE SURE TO CLOSE THE FILE AFTER READING - IMPORTANT FOR P3 - NOTE FROM PROF
     ifs.close();
 
 
     //Print Statistics
     std::cout << "\n\nAssembly Summary - "+filename+"\n----------------\n"
               << setw(20) << "Starting Address: " << addresses->start << endl
-              << setw(20) << "Ending Address:  "<< addresses->current << endl
-              << setw(20) << "Size (bytes):  " << (stoi(toDec(addresses->current))-stoi(toDec(addresses->start))) << endl;
+              << setw(20) << " Ending Address:  "<< addresses->current << endl
+              << setw(20) << " Size (bytes):  " << (stoi(toDec(addresses->current))-stoi(toDec(addresses->start))) << endl;
 
 }
 
@@ -109,6 +109,4 @@ int main(int argc, char* argv[]) {
 
     //Perform pass 1 with given params
     performPass1(symbolTable,argv[1],&addresses);
-
-
 }
