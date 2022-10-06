@@ -1,7 +1,5 @@
 #include "headers.h"
 
-#define MOD_SIZE 10
-#define SYMBOL_TABLE_SEGMENTS 10
 #define SYMBOL_TABLE_SIZE 100
 
 int computeHash(std::string symbolName) {
@@ -28,7 +26,6 @@ void printSymbol(struct symbol s, std::string index){
     std::cout << std::left << std::setw(7) << index << std::left << std::setw(10) << s.name << std::right << std::setw(6) << s.address << std::endl;
 }
 void displaySymbolLink(struct symbol s, int index){
-    //Re-used code from p1
     printSymbol(s,std::to_string(index));
     struct symbol* pt = s.next;
     while(pt!=nullptr){
@@ -45,6 +42,20 @@ void displaySymbolTable(struct symbol symbolTable[]) {
 
     for(int i=0;i<SYMBOL_TABLE_SIZE;i++) {
         displaySymbolLink(symbolTable[i],i);
+    }
+}
+void checkDuplicates(struct symbol* symbolTable,struct segment* current){
+    int hash = computeHash(current->first);
+    struct symbol dupCheck = symbolTable[hash];
+    while(!dupCheck.name.empty()){
+        if(dupCheck.name==current->first){
+            displayError(DUPLICATE,current->first);
+            exit(1);
+        }
+        if(dupCheck.next!= nullptr) { dupCheck = *dupCheck.next; }
+        else{
+            break;
+        }
     }
 }
 

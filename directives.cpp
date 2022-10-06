@@ -12,7 +12,7 @@ int getMemoryAmount(int directiveType, std::string str) {
                 str.erase(0,2);
                 str.erase(str.size()-1,1);
                 int dec = stoi(toDec(str));
-                if(dec<0 || dec>255) { displayError(OUT_OF_RANGE_BYTE,str); }
+                if(dec<0 || dec>255) { displayError(OUT_OF_RANGE_BYTE,str); exit(1); }
                 return 1;
             }
             else if(str.find('C')!=std::string::npos){
@@ -34,6 +34,7 @@ int getMemoryAmount(int directiveType, std::string str) {
         case WORD:{
             if(stoi(str)<-16777216 || std::stoi(str)>16777215) {
                 displayError(OUT_OF_RANGE_WORD,str);
+                exit(1);
             } else return 3;
         }
     }

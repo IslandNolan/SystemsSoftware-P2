@@ -34,13 +34,17 @@ segment* prepareSegments(std::string statement) {
             }
         }
     }
-    //std::cout << std::left << std::setw(SEGMENT_SIZE) << temp->first << std::left << std::setw(SEGMENT_SIZE) << temp->second << std::left << std::setw(SEGMENT_SIZE) << temp->third;
     return temp;
 }
 
-
+/**
+ * Perform the SIC Assembly Pass 1 on the specified file using the declared objects.
+ * @param symbolTable Reference to table to use.
+ * @param filename File to parse
+ * @param addresses Current Addresses for the instruction
+ */
 void performPass1(struct symbol symbolTable[], std::string filename, address* addresses) {
-    cout << "Symbol Table Log\n----------------" << std::endl;
+    cout << "\nSymbol Table Log\n----------------" << std::endl;
     std::ifstream ifs(filename);
     if(!ifs.is_open()) { displayError(FILE_NOT_FOUND,filename); exit(1); }
     std::string currentLine;
@@ -50,11 +54,13 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
         if (currentLine[0] == '#') { continue; }
         if (currentLine[0] < 32) {
             displayError(BLANK_RECORD,"",lineNumber);
+            exit(1);
         }
         segment *current = prepareSegments(currentLine);
 
         if(isDirective(current->first) || isOpcode(current->first)) {
             displayError(ILLEGAL_SYMBOL,current->first,lineNumber);
+            exit(1);
         }
         else if(isDirective(current->second)) {
             if(isStartDirective(current->second)){
@@ -72,24 +78,23 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
         }
         else{
             displayError(ILLEGAL_OPCODE_DIRECTIVE,current->second,lineNumber);
+            exit(1);
         }
         int newValue = (stoi(toDec(addresses->current)) + stoi(toDec(addresses->increment)));
-        if(newValue> stoi(toDec("0x8000"))) { displayError(OUT_OF_MEMORY, toHex(to_string(newValue)),lineNumber); }
+        if(newValue> stoi(toDec("0x8000"))) { displayError(OUT_OF_MEMORY, toHex(to_string(newValue)),lineNumber); exit(1); }
 
         if(!current->first.empty()) {
+            checkDuplicates(symbolTable,current);
             insertSymbol(symbolTable,current->first,addresses->current);
         }
-
         addresses->current = toHex(to_string(newValue));
     }
     std::cout << std::endl;
     displaySymbolTable(symbolTable);
 
-    //IMPORTANT: MAKE SURE TO CLOSE THE FILE AFTER READING - IMPORTANT FOR P3 - NOTE FROM PROF
     ifs.close();
 
 
-    //Print Statistics
     std::cout << "\n\nAssembly Summary - "+filename+"\n----------------\n"
               << setw(20) << "Starting Address: " << addresses->start << endl
               << setw(20) << " Ending Address:  "<< addresses->current << endl
@@ -100,13 +105,9 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
 int main(int argc, char* argv[]) {
 
     if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
-
-    //Used for important addresses. Start of program, current, and what to increment by
     address addresses = { "", "", "" };
 
-    //Initialize the symbol table using calloc.
     auto* symbolTable = (symbol*) calloc(sizeof(struct symbol),100);
 
-    //Perform pass 1 with given params
     performPass1(symbolTable,argv[1],&addresses);
 }

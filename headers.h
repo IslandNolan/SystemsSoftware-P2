@@ -1,9 +1,11 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 #define NAME_SIZE 7
-#define SEGMENT_SIZE 9
 
 enum errors {
 	BLANK_RECORD, DUPLICATE, FILE_NOT_FOUND, ILLEGAL_OPCODE_DIRECTIVE, ILLEGAL_SYMBOL,
@@ -45,6 +47,7 @@ bool isOpcode(std::string string);
 
 // symbols.c functions
 int computeHash(std::string str);
+void checkDuplicates(struct symbol symbolTable[],struct segment* current);
 void displaySymbolTable(struct symbol symbolTable[]);
 void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, const std::string& symbolAddress);
 std::string toHex(std::string decVal);

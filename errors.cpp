@@ -2,6 +2,7 @@
 
 void displayError(int errorType,std::string errorInfo){
     displayError(errorType,errorInfo,-1);
+    exit(1);
 }
 void displayError(int errorType,std::string errorInfo,int line) {
     std::cout << std::setw(25) << std::left << "\n\nError (Line: "+std::to_string(line)+")";
@@ -11,7 +12,6 @@ void displayError(int errorType,std::string errorInfo,int line) {
             break;
         }
         case DUPLICATE: {
-            //Not Done Yet
             std::cout << "Duplicate Entry '"+errorInfo+"'" << std::endl;
             break;
         }
@@ -45,5 +45,4 @@ void displayError(int errorType,std::string errorInfo,int line) {
         }
         default: break;
     }
-    exit(1);
 }

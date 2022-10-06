@@ -1,8 +1,5 @@
 #include "headers.h"
 
-#define INPUT_BUF_SIZE 30
-#define MOD_SIZE 5
-#define NEW_LINE 10
 #define OPCODE_ARRAY_SIZE 26
 
 typedef struct opcode {
@@ -10,7 +7,6 @@ typedef struct opcode {
 	int value;
 } opcode;
 
-// Do not modify this values
 opcode opcodes[OPCODE_ARRAY_SIZE] = { 
 	{"ADD",0x18},{"AND",0x40},{"COMP",0x28},{"DIV",0x24},
 	{"J",0x3C},{"JEQ",0x30},{"JGT",0x34},{"JLT",0x38},
