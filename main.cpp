@@ -13,7 +13,7 @@ using namespace std;
  * @return a pointer to a typedef struct segment.
  */
 segment* prepareSegments(std::string statement) {
-    auto* temp = (segment*) malloc(sizeof(segment));
+    auto* temp = new segment();
     std::stringstream iss(statement);
     std::string current;
     for(int i=0;i<3;i++){
@@ -28,7 +28,9 @@ segment* prepareSegments(std::string statement) {
                     temp->second=current;
                     break;
                 case 2:
-                    temp->third=current;
+                    if(current != temp->second) {
+                        temp->third = current;
+                    }
                     break;
                 default: break;
             }
@@ -64,48 +66,47 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
         }
         else if(isDirective(current->second)) {
             if(isStartDirective(current->second)){
-                addresses->start = "0x"+current->third;
-                addresses->current = "0x"+current->third;
+                addresses->start = std::strtoull(("0x"+current->third).c_str(),nullptr,16);
+                addresses->current = std::strtoull(("0x"+current->third).c_str(),nullptr,16);
                 continue;
             }
             else {
-                int numBytes = getMemoryAmount(getDirectiveValue(current->second),current->third);
-                addresses->increment = toHex(to_string(numBytes));
+                addresses->increment = getMemoryAmount(getDirectiveValue(current->second),current->third);
             }
         }
         else if(isOpcode(current->second)) {
-            addresses->increment = toHex(to_string(3));
+            addresses->increment = 0x3;
         }
         else{
             displayError(ILLEGAL_OPCODE_DIRECTIVE,current->second,lineNumber);
             exit(1);
         }
-        int newValue = (stoi(toDec(addresses->current)) + stoi(toDec(addresses->increment)));
-        if(newValue> stoi(toDec("0x8000"))) { displayError(OUT_OF_MEMORY, toHex(to_string(newValue)),lineNumber); exit(1); }
+        int newValue = addresses->current + addresses->increment;
+        if(newValue > 0x8000) { displayError(OUT_OF_MEMORY, to_string(newValue),lineNumber); exit(1); }
 
         if(!current->first.empty()) {
             checkDuplicates(symbolTable,current);
             insertSymbol(symbolTable,current->first,addresses->current);
         }
-        addresses->current = toHex(to_string(newValue));
+        addresses->current = newValue;
+        delete(current);
     }
     std::cout << std::endl;
     displaySymbolTable(symbolTable);
 
     ifs.close();
 
-
     std::cout << "\n\nAssembly Summary - "+filename+"\n----------------\n"
-              << setw(20) << "Starting Address: " << addresses->start << endl
-              << setw(20) << " Ending Address:  "<< addresses->current << endl
-              << setw(20) << " Size (bytes):  " << (stoi(toDec(addresses->current))-stoi(toDec(addresses->start))) << endl;
+              << setw(20) << "Starting Address: " << std::hex << addresses->start << std::dec << endl
+              << setw(20) << " Ending Address:  "<< std::hex << addresses->current << std::dec << endl
+              << setw(20) << " Size (bytes):  " << addresses->current-addresses->start << std::endl;
 
 }
 
 int main(int argc, char* argv[]) {
 
     if(argc<2) { displayError(MISSING_COMMAND_LINE_ARGUMENTS,std::string("Missing Args"),-1); exit(1); }
-    address addresses = { "", "", "" };
+    address addresses = { 0x0, 0x0, 0x0 };
 
     auto* symbolTable = (symbol*) calloc(sizeof(struct symbol),100);
 

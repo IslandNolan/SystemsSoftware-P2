@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 #define NAME_SIZE 7
 
@@ -14,9 +15,9 @@ enum errors {
 
 typedef struct address
 {
-	std::string start;
-	std::string current;
-	std::string increment;
+	int start;
+	int current;
+	int increment;
 } address;
 
 typedef struct segment {
@@ -26,8 +27,8 @@ typedef struct segment {
 } segment;
 
 typedef struct symbol {
-	std::string name="";
-	std::string address="";
+	std::string name;
+	int address=0x00;
     struct symbol* next=nullptr;
 } symbol;
 
@@ -49,6 +50,4 @@ bool isOpcode(std::string string);
 int computeHash(std::string str);
 void checkDuplicates(struct symbol symbolTable[],struct segment* current);
 void displaySymbolTable(struct symbol symbolTable[]);
-void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, const std::string& symbolAddress);
-std::string toHex(std::string decVal);
-std::string toDec(std::string hexVal);
+void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, int symbolAddress);

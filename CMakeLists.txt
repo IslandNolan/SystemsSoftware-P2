@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 
 add_executable(
-        SystemsSoftware_P2 main.cpp
+        P2 main.cpp
         opcodes.cpp
         symbols.cpp
         errors.cpp

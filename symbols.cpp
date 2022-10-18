@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <iosfwd>
 #include "headers.h"
 
 #define SYMBOL_TABLE_SIZE 100
@@ -9,21 +11,13 @@ int computeHash(std::string symbolName) {
     }
     return sum%SYMBOL_TABLE_SIZE;
 }
-std::string toDec(std::string hexVal){
-    int value;
-    std::stringstream ss;
-    ss << std::hex << hexVal;
-    ss >> value;
-    return std::to_string(value);
-}
-std::string toHex(std::string decVal){
-    std::stringstream ss;
-    ss << "0x" << std::hex << stoi(decVal);
-    return ss.str();
-}
 void printSymbol(struct symbol s, std::string index){
     if(s.name.empty()) { return; }
-    std::cout << std::left << std::setw(7) << index << std::left << std::setw(10) << s.name << std::right << std::setw(6) << s.address << std::endl;
+    std::stringstream ss;
+    ss << std::hex << s.address;
+    std::string adFormatted = ss.str();
+    std::transform(adFormatted.begin(),adFormatted.end(),adFormatted.begin(),toupper);
+    std::cout << std::left << std::setw(7) << index << std::left << std::setw(10) << s.name << std::right << std::setw(6) << " 0x"+adFormatted << std::endl;
 }
 void displaySymbolLink(struct symbol s, int index){
     printSymbol(s,std::to_string(index));
@@ -59,7 +53,7 @@ void checkDuplicates(struct symbol* symbolTable,struct segment* current){
     }
 }
 
-void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, const std::string& symbolAddress) {
+void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, int symbolAddress) {
     int instructionHash = computeHash(symbolName);
     auto* newSymbol = (symbol*) malloc(sizeof(struct segment));
     newSymbol->name = symbolName;
@@ -74,5 +68,5 @@ void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, co
         }
         symbolTable[instructionHash].next = newSymbol;
     }
-    std::cout << std::left << std::setw(30) << "Inserted Symbol '"+symbolName+"'" << "Index: " << computeHash(symbolName) << std::endl;
+    std::cout << std::left << std::setw(30) << "Inserted Symbol '"+symbolName+"'" << "Index: " << stoi(std::to_string(instructionHash),nullptr,10) << std::endl;
 }
