@@ -45,4 +45,5 @@ void displayError(int errorType,std::string errorInfo,int line) {
         }
         default: break;
     }
+    std::cout << std::resetiosflags(std::ios::showbase);
 }

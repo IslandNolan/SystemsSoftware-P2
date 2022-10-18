@@ -17,7 +17,7 @@ void printSymbol(struct symbol s, std::string index){
     ss << std::hex << s.address;
     std::string adFormatted = ss.str();
     std::transform(adFormatted.begin(),adFormatted.end(),adFormatted.begin(),toupper);
-    std::cout << std::left << std::setw(7) << index << std::left << std::setw(10) << s.name << std::right << std::setw(6) << " 0x"+adFormatted << std::endl;
+    std::cout << std::left << std::setw(7) << index << std::left << std::setw(10) << s.name << std::right << std::setw(6) << " 0x"+adFormatted << std::resetiosflags(std::ios::showbase) << std::endl;
 }
 void displaySymbolLink(struct symbol s, int index){
     printSymbol(s,std::to_string(index));
@@ -68,5 +68,5 @@ void insertSymbol(struct symbol symbolTable[], const std::string& symbolName, in
         }
         symbolTable[instructionHash].next = newSymbol;
     }
-    std::cout << std::left << std::setw(30) << "Inserted Symbol '"+symbolName+"'" << "Index: " << stoi(std::to_string(instructionHash),nullptr,10) << std::endl;
+    std::cout << std::left << std::setw(30) << "Inserted Symbol '"+symbolName+"'" << "Index: " << stoi(std::to_string(instructionHash),nullptr,10) << std::resetiosflags(std::ios::showbase) << std::endl;
 }

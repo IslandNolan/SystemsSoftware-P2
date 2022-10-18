@@ -99,7 +99,7 @@ void performPass1(struct symbol symbolTable[], std::string filename, address* ad
     std::cout << "\n\nAssembly Summary - "+filename+"\n----------------\n"
               << setw(20) << "Starting Address: " << std::hex << addresses->start << std::dec << endl
               << setw(20) << " Ending Address:  "<< std::hex << addresses->current << std::dec << endl
-              << setw(20) << " Size (bytes):  " << addresses->current-addresses->start << std::endl;
+              << setw(20) << " Size (bytes):  " << addresses->current-addresses->start << std::resetiosflags(std::ios::showbase) << std::endl;
 
 }
 
